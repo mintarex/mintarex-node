@@ -1,4 +1,4 @@
-import { Mintarex, QuoteExpiredError, InsufficientBalanceError } from '@mintarex/node';
+import { Mintarex, QuoteExpiredError, InsufficientBalanceError } from '@mintarex-official/node';
 
 const mx = new Mintarex({
   apiKey: process.env.MINTAREX_API_KEY,

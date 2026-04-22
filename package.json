@@ -1,5 +1,5 @@
 {
-  "name": "@mintarex/node",
+  "name": "@mintarex-official/node",
   "version": "0.0.1",
   "description": "Official Node.js SDK for the Mintarex Corporate OTC API",
   "keywords": [

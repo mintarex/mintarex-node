@@ -1,9 +1,9 @@
 /**
- * @mintarex/node — Official Node.js SDK for the Mintarex Corporate OTC API.
+ * @mintarex-official/node — Official Node.js SDK for the Mintarex Corporate OTC API.
  *
  * Usage:
  * ```ts
- * import { Mintarex } from '@mintarex/node';
+ * import { Mintarex } from '@mintarex-official/node';
  * const mx = new Mintarex({ apiKey, apiSecret });
  * const quote = await mx.rfq.quote({ base: 'BTC', quote: 'USD', side: 'buy',
  *                                    amount: '0.5', amount_type: 'base' });

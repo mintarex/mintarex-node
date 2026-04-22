@@ -4,17 +4,17 @@
   </a>
 </p>
 
-<h1 align="center">@mintarex/node</h1>
+<h1 align="center">@mintarex-official/node</h1>
 
 <p align="center">
   Official Node.js SDK for the <a href="https://developers.mintarex.com">Mintarex Corporate OTC API</a>.
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@mintarex/node"><img src="https://img.shields.io/npm/v/@mintarex/node.svg?style=flat-square" alt="npm version" /></a>
-  <a href="https://www.npmjs.com/package/@mintarex/node"><img src="https://img.shields.io/npm/dm/@mintarex/node.svg?style=flat-square" alt="npm downloads" /></a>
-  <a href="https://github.com/mintarex/mintarex-node/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@mintarex/node.svg?style=flat-square" alt="MIT License" /></a>
-  <a href="https://nodejs.org"><img src="https://img.shields.io/node/v/@mintarex/node.svg?style=flat-square" alt="Node.js version" /></a>
+  <a href="https://www.npmjs.com/package/@mintarex-official/node"><img src="https://img.shields.io/npm/v/@mintarex-official/node.svg?style=flat-square" alt="npm version" /></a>
+  <a href="https://www.npmjs.com/package/@mintarex-official/node"><img src="https://img.shields.io/npm/dm/@mintarex-official/node.svg?style=flat-square" alt="npm downloads" /></a>
+  <a href="https://github.com/mintarex/mintarex-node/blob/main/LICENSE"><img src="https://img.shields.io/npm/l/@mintarex-official/node.svg?style=flat-square" alt="MIT License" /></a>
+  <a href="https://nodejs.org"><img src="https://img.shields.io/node/v/@mintarex-official/node.svg?style=flat-square" alt="Node.js version" /></a>
   <a href="https://www.typescriptlang.org"><img src="https://img.shields.io/badge/types-TypeScript-blue?style=flat-square" alt="TypeScript" /></a>
 </p>
 
@@ -30,13 +30,13 @@
 ## Installation
 
 ```bash
-npm install @mintarex/node
+npm install @mintarex-official/node
 ```
 
 ## Quickstart
 
 ```ts
-import { Mintarex } from '@mintarex/node';
+import { Mintarex } from '@mintarex-official/node';
 
 const mx = new Mintarex({
   apiKey: process.env.MINTAREX_API_KEY!,      // mxn_live_... or mxn_test_...
@@ -86,7 +86,7 @@ The canonical string is `METHOD\nPATH\nTIMESTAMP\nNONCE\nSHA256_HEX(body)`.
 The SDK handles all of this for you; you don't need to sign manually. If you want to inspect or reuse the primitives, they are exported:
 
 ```ts
-import { sign, buildCanonicalString } from '@mintarex/node';
+import { sign, buildCanonicalString } from '@mintarex-official/node';
 ```
 
 ### Retries
@@ -110,7 +110,7 @@ import {
   ConflictError,
   NotFoundError,
   ServerError,
-} from '@mintarex/node';
+} from '@mintarex-official/node';
 
 try {
   await mx.rfq.accept(quoteId);
@@ -196,7 +196,7 @@ Every delivery carries `X-Mintarex-Signature: v1=<hex>` and `X-Mintarex-Timestam
 
 ```ts
 import express from 'express';
-import { verifyWebhook, WebhookSignatureError } from '@mintarex/node';
+import { verifyWebhook, WebhookSignatureError } from '@mintarex-official/node';
 
 const app = express();
 

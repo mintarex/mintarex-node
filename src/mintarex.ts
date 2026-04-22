@@ -14,7 +14,7 @@ import { StreamsResource } from './streams.js';
  *
  * @example
  * ```ts
- * import { Mintarex } from '@mintarex/node';
+ * import { Mintarex } from '@mintarex-official/node';
  *
  * const mx = new Mintarex({
  *   apiKey: process.env.MX_KEY!,

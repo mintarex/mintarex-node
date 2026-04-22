@@ -1,4 +1,4 @@
-import { Mintarex } from '@mintarex/node';
+import { Mintarex } from '@mintarex-official/node';
 
 const mx = new Mintarex({
   apiKey: process.env.MINTAREX_API_KEY,

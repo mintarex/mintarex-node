@@ -1,5 +1,5 @@
 import http from 'node:http';
-import { verifyWebhook, WebhookSignatureError } from '@mintarex/node';
+import { verifyWebhook, WebhookSignatureError } from '@mintarex-official/node';
 
 const SECRET = process.env.MINTAREX_WEBHOOK_SECRET;
 
