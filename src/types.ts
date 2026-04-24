@@ -67,16 +67,15 @@ export interface SingleBalanceResponse {
 
 export interface FeesResponse {
   trading_fee_rate: string;
-  fiat_withdrawal_fee_rate: string;
   note?: string;
   timestamp: string;
 }
 
 export interface LimitBucket {
   daily_limit: string | null;
-  daily_used: string;
+  daily_used: string | null;
   monthly_limit: string | null;
-  monthly_used: string;
+  monthly_used: string | null;
   remaining_daily: string | null;
   remaining_monthly: string | null;
 }
@@ -84,10 +83,6 @@ export interface LimitBucket {
 export interface LimitsResponse {
   account_type: 'individual' | 'corporate';
   limits: {
-    card_deposit: LimitBucket | null;
-    wallet_deposit: LimitBucket | null;
-    bank_deposit: LimitBucket | null;
-    fiat_withdrawal: LimitBucket | null;
     crypto_deposit: LimitBucket | null;
     crypto_withdrawal: LimitBucket | null;
   };
