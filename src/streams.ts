@@ -23,6 +23,9 @@ export interface StreamOptions {
   heartbeatIntervalMs?: number;
   /** Optional AbortSignal to externally terminate the stream. */
   signal?: AbortSignal;
+  /** Restrict the price stream to a subset of instruments
+   * (e.g. `['BTC_USD', 'ETH_USD']`). Ignored on the account stream. */
+  instruments?: readonly string[];
 }
 
 export interface StreamMessage {
@@ -44,7 +47,8 @@ export interface StreamMessage {
 export class Stream extends EventEmitter {
   private readonly client: MintarexClient;
   private readonly endpoint: 'prices' | 'account';
-  private readonly options: Required<Omit<StreamOptions, 'signal'>>;
+  private readonly options: Required<Omit<StreamOptions, 'signal' | 'instruments'>>;
+  private readonly instruments: readonly string[] | null;
   private readonly externalSignal: AbortSignal | undefined;
   private abortController: AbortController | null = null;
   private watchdog: NodeJS.Timeout | null = null;
@@ -75,6 +79,7 @@ export class Stream extends EventEmitter {
       maxReconnectDelayMs,
       heartbeatIntervalMs: hb,
     };
+    this.instruments = normalizeInstruments(options.instruments);
     this.externalSignal = options.signal;
     this.setMaxListeners(0);
     if (this.externalSignal) {
@@ -165,6 +170,9 @@ export class Stream extends EventEmitter {
     const url = new URL(this.client.streamBaseURL.href);
     url.pathname = trimTrailing(url.pathname) + '/' + this.endpoint;
     url.searchParams.set('token', token);
+    if (this.endpoint === 'prices' && this.instruments && this.instruments.length > 0) {
+      url.searchParams.set('instruments', this.instruments.join(','));
+    }
 
     // Abort the initial connection attempt after 2x heartbeat interval
     // so a silent server (TCP accept but no response) can't stall us.
@@ -344,6 +352,30 @@ function sleep(ms: number): Promise<void> {
 
 function trimTrailing(p: string): string {
   return p.endsWith('/') ? p.slice(0, -1) : p;
+}
+
+function normalizeInstruments(input: readonly string[] | undefined): readonly string[] | null {
+  if (!input) return null;
+  if (!Array.isArray(input)) {
+    throw new Error('instruments must be an array of strings (e.g. ["BTC_USD"])');
+  }
+  const cleaned: string[] = [];
+  for (const v of input) {
+    if (typeof v !== 'string' || v.length === 0) {
+      throw new Error('instruments entries must be non-empty strings');
+    }
+    if (!/^[A-Z0-9]{1,20}_[A-Z0-9]{1,20}$/.test(v)) {
+      throw new Error(
+        `instruments entry "${v}" must look like BASE_QUOTE (e.g. BTC_USD)`,
+      );
+    }
+    cleaned.push(v);
+  }
+  if (cleaned.length === 0) return null;
+  if (cleaned.length > 200) {
+    throw new Error('instruments list capped at 200 entries');
+  }
+  return cleaned;
 }
 
 function findEventBoundary(s: string): number {

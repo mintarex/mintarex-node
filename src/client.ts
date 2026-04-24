@@ -17,7 +17,7 @@ export interface ClientOptions {
   userAgent?: string;
 }
 
-const SDK_VERSION = '0.0.1';
+const SDK_VERSION = '0.0.4';
 const DEFAULT_BASE_URL = 'https://institutional.mintarex.com/v1';
 const DEFAULT_STREAM_BASE_URL =
   'https://institutional.mintarex.com/v1/stream';
@@ -54,7 +54,9 @@ interface NormalizedRequest {
 
 export class MintarexClient {
   private readonly apiKey: string;
-  private readonly apiSecret: string;
+  // Definite-assignment: assigned via Object.defineProperty in the constructor
+  // so JSON.stringify / util.inspect / console.log don't leak it.
+  private readonly apiSecret!: string;
   public readonly environment: Environment;
   public readonly baseURL: URL;
   public readonly streamBaseURL: URL;
@@ -67,6 +69,25 @@ export class MintarexClient {
    *  implementation (including any test-injected mock). */
   public get fetch(): typeof fetch {
     return this.fetchImpl;
+  }
+
+  /** Safe representation for `JSON.stringify(client)`. apiSecret is omitted. */
+  public toJSON(): Record<string, unknown> {
+    return {
+      apiKey: this.apiKey,
+      environment: this.environment,
+      baseURL: this.baseURL.href,
+      streamBaseURL: this.streamBaseURL.href,
+      timeoutMs: this.timeoutMs,
+      maxRetries: this.maxRetries,
+    };
+  }
+
+  /** Safe representation for `util.inspect(client)` / `console.log(client)`.
+   *  Some tooling reaches for this symbol over toJSON(); covering both prevents
+   *  the secret from leaking into structured logs. */
+  public [Symbol.for('nodejs.util.inspect.custom')](): string {
+    return `MintarexClient { apiKey: '${this.apiKey}', environment: '${this.environment}', apiSecret: '[REDACTED]' }`;
   }
 
   public constructor(options: ClientOptions) {
@@ -95,7 +116,14 @@ export class MintarexClient {
     }
 
     this.apiKey = options.apiKey;
-    this.apiSecret = options.apiSecret;
+    // Store apiSecret as a non-enumerable property so JSON.stringify(client),
+    // util.inspect(client) and console.log(client) cannot leak it into logs.
+    Object.defineProperty(this, 'apiSecret', {
+      value: options.apiSecret,
+      enumerable: false,
+      writable: false,
+      configurable: false,
+    });
     this.environment = env;
     this.baseURL = parseBaseURL(options.baseURL ?? DEFAULT_BASE_URL, 'baseURL');
     this.streamBaseURL = parseBaseURL(
