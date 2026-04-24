@@ -45,7 +45,6 @@ const mx = new Mintarex({
 
 // Account
 const balances = await mx.account.balances({ currency_type: 'crypto' });
-const fees = await mx.account.fees();
 
 // RFQ — request a quote and accept it
 const quote = await mx.rfq.quote({
@@ -229,7 +228,7 @@ The verifier uses constant-time comparison and rejects any delivery more than 5 
 
 | Resource | Methods |
 |---|---|
-| `mx.account` | `balances`, `balance`, `fees`, `limits` |
+| `mx.account` | `balances`, `balance`, `limits` |
 | `mx.rfq` | `quote`, `accept` |
 | `mx.trades` | `list`, `get` |
 | `mx.crypto` | `depositAddress`, `deposits`, `withdraw`, `withdrawals`, `getWithdrawal` |

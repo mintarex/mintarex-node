@@ -51,7 +51,6 @@ export type {
   Balance,
   BalancesResponse,
   SingleBalanceResponse,
-  FeesResponse,
   LimitsResponse,
   LimitBucket,
   Quote,

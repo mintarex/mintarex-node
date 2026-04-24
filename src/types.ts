@@ -65,12 +65,6 @@ export interface SingleBalanceResponse {
   timestamp: string;
 }
 
-export interface FeesResponse {
-  trading_fee_rate: string;
-  note?: string;
-  timestamp: string;
-}
-
 export interface LimitBucket {
   daily_limit: string | null;
   daily_used: string | null;

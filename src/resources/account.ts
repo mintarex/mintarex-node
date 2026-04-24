@@ -2,7 +2,6 @@ import type { MintarexClient } from '../client.js';
 import { assertCoin, assertFiatCurrency } from '../validate.js';
 import type {
   BalancesResponse,
-  FeesResponse,
   LimitsResponse,
   SingleBalanceResponse,
 } from '../types.js';
@@ -26,13 +25,6 @@ export class AccountResource {
     return this.client.request<SingleBalanceResponse>({
       method: 'GET',
       path: `/account/balance/${encodeURIComponent(c)}`,
-    });
-  }
-
-  public async fees(): Promise<FeesResponse> {
-    return this.client.request<FeesResponse>({
-      method: 'GET',
-      path: '/account/fees',
     });
   }
 
