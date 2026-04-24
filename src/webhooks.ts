@@ -163,10 +163,23 @@ function readHeader(
   if (headers instanceof Headers) {
     return headers.get(lower);
   }
-  if (typeof (headers as Iterable<[string, string]>)[Symbol.iterator] === 'function' &&
-      !Array.isArray(headers) && !(headers as object).constructor?.name?.includes('Object')) {
-    for (const [k, v] of headers as Iterable<[string, string]>) {
-      if (typeof k === 'string' && k.toLowerCase() === lower) return v;
+  // Map<string,string> — explicit check (replaces a fragile constructor.name
+  // sniff that misbehaved on custom classes).
+  if (headers instanceof Map) {
+    for (const [k, v] of headers) {
+      if (typeof k === 'string' && k.toLowerCase() === lower) {
+        return typeof v === 'string' ? v : null;
+      }
+    }
+    return null;
+  }
+  // Array of [name, value] pairs (e.g. fetch's Headers#entries spread).
+  if (Array.isArray(headers)) {
+    for (const entry of headers) {
+      if (Array.isArray(entry) && typeof entry[0] === 'string' &&
+          entry[0].toLowerCase() === lower) {
+        return typeof entry[1] === 'string' ? entry[1] : null;
+      }
     }
     return null;
   }

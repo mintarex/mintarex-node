@@ -17,7 +17,7 @@ export interface ClientOptions {
   userAgent?: string;
 }
 
-const SDK_VERSION = '0.0.4';
+const SDK_VERSION = '0.0.5';
 const DEFAULT_BASE_URL = 'https://institutional.mintarex.com/v1';
 const DEFAULT_STREAM_BASE_URL =
   'https://institutional.mintarex.com/v1/stream';
@@ -382,34 +382,6 @@ export class MintarexClient {
     }
   }
 
-  /** Produce headers for an externally-managed request (e.g. SSE GET). */
-  public signForStreamToken(): {
-    method: 'POST';
-    url: URL;
-    headers: Record<string, string>;
-    body: string;
-  } {
-    const url = new URL(this.baseURL.href);
-    url.pathname = joinPath(url.pathname, '/stream/token');
-    const bodyBytes = '';
-    const headers = sign({
-      apiKey: this.apiKey,
-      apiSecret: this.apiSecret,
-      method: 'POST',
-      path: url.pathname,
-      body: bodyBytes,
-    });
-    return {
-      method: 'POST',
-      url,
-      headers: {
-        ...headers,
-        Accept: 'application/json',
-        'User-Agent': `mintarex-node/${SDK_VERSION} (node ${process.version})${this.userAgentExtra}`,
-      },
-      body: bodyBytes,
-    };
-  }
 }
 
 function inferEnvironment(apiKey: string): Environment {

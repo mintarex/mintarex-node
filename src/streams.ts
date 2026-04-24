@@ -391,14 +391,21 @@ export class StreamsResource {
 
   public prices(options?: StreamOptions): Stream {
     const s = new Stream(this.client, 'prices', options);
-    // Start asynchronously; caller attaches listeners before awaiting.
-    void s.connect().catch((err) => s.emit('error', err));
+    // Defer connect() one microtask so the caller has a guaranteed turn to
+    // attach listeners (esp. 'error') before any emission can happen, and so
+    // a synchronous s.close() before the microtask runs is honoured (Stream
+    // .connect() bails on the closedByUser flag).
+    queueMicrotask(() => {
+      s.connect().catch((err) => s.emit('error', err));
+    });
     return s;
   }
 
   public account(options?: StreamOptions): Stream {
     const s = new Stream(this.client, 'account', options);
-    void s.connect().catch((err) => s.emit('error', err));
+    queueMicrotask(() => {
+      s.connect().catch((err) => s.emit('error', err));
+    });
     return s;
   }
 }
