@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
 import { verifyWebhook, WebhookSignatureError } from '../dist/index.js';
 
-const SECRET = 'whsec_testsecret0123456789abcdef0123456789abcdef01234567';
+const SECRET = 'mtxhook_test_fixture_key_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
 
 function signPayload(timestamp, body, secret = SECRET) {
   return 'v1=' + createHmac('sha256', secret).update(`${timestamp}.${body}`).digest('hex');
@@ -76,7 +76,7 @@ test('verifyWebhook rejects tampered body', () => {
 test('verifyWebhook rejects wrong secret', () => {
   const body = '{"timestamp":"t","trade_id":"x"}';
   const ts = Math.floor(Date.now() / 1000).toString();
-  const sig = signPayload(ts, body, 'whsec_othersecret0123456789abcdef0123456789abcdef012');
+  const sig = signPayload(ts, body, 'mtxhook_test_other_key_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
   assert.throws(
     () =>
       verifyWebhook({
